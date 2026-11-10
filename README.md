@@ -27,7 +27,7 @@
 
 </div>
 
-Quotes, charts, financials, filings, options, news and your portfolio in one workspace you drive from the keyboard. Type `DES AAPL` for company details or `GP NVDA` for a chart. It runs in your terminal (macOS, Linux, Windows), as a desktop app (macOS, Windows), and in the browser.
+Quotes, charts, financials, filings, options, news and your portfolio in one workspace you drive from the keyboard. Type `DES AAPL` for company details or `GP NVDA` for a chart. It runs in your terminal (macOS, Linux, Windows), as a desktop app (macOS, Windows, Linux), and in the browser.
 
 ## Install
 
@@ -51,7 +51,7 @@ bun install -g @gloom-sh/terminal
 
 `npm install -g @gloom-sh/terminal` works too, but the command runs on Bun, so install [Bun](https://bun.sh) first.
 
-Then run `gloom` (`gloomberb`, its old name, still works). On Apple Silicon the script also installs the desktop app, Gloom.app. Homebrew, the Windows desktop installer and manual downloads are in the [installation guide](docs/installation.md).
+Then run `gloom` (`gloomberb`, its old name, still works). On Apple Silicon the script also installs the desktop app, Gloom.app. Homebrew, the Windows desktop installer, the Linux AppImage and manual downloads are in the [installation guide](docs/installation.md).
 
 Charts draw as images in Kitty-compatible terminals such as Ghostty, Kitty and WezTerm, and as text elsewhere.
 

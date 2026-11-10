@@ -29,7 +29,7 @@
 
 > 本文档为社区维护的简体中文翻译。若与 [英文原版 README](README.md) 有出入，以英文版为准。
 
-行情、图表、财务报表、监管文件、期权、新闻和你的投资组合，都在一个用键盘操作的工作区里。输入 `DES AAPL` 查看公司详情，输入 `GP NVDA` 查看价格图表。Gloom 可在终端（macOS、Linux、Windows）、桌面应用（macOS、Windows）和浏览器中运行。
+行情、图表、财务报表、监管文件、期权、新闻和你的投资组合，都在一个用键盘操作的工作区里。输入 `DES AAPL` 查看公司详情，输入 `GP NVDA` 查看价格图表。Gloom 可在终端（macOS、Linux、Windows）、桌面应用（macOS、Windows、Linux）和浏览器中运行。
 
 ## 安装
 
@@ -51,7 +51,7 @@ irm https://gloom.sh/install.ps1 | iex
 bun install -g @gloom-sh/terminal
 ```
 
-然后运行 `gloom`（旧名称 `gloomberb` 仍可使用）。在 Apple Silicon Mac 上，脚本还会安装桌面应用 Gloom.app。Homebrew、Windows 桌面安装程序与手动下载详见[安装指南（英文）](docs/installation.md)。
+然后运行 `gloom`（旧名称 `gloomberb` 仍可使用）。在 Apple Silicon Mac 上，脚本还会安装桌面应用 Gloom.app。Homebrew、Windows 桌面安装程序、Linux AppImage 与手动下载详见[安装指南（英文）](docs/installation.md)。
 
 在兼容 Kitty 图形协议的终端（如 Ghostty、Kitty、WezTerm）中，图表以图像显示；在其他终端中以文本显示。
 

@@ -27,7 +27,7 @@
 
 </div>
 
-株価、チャート、財務情報、開示書類、オプション、ニュース、そしてあなたのポートフォリオを、キーボードで操作する 1 つのワークスペースにまとめています。企業の詳細なら `DES AAPL`、チャートなら `GP NVDA` と入力します。ターミナル（macOS、Linux、Windows）、デスクトップアプリ（macOS、Windows）、ブラウザーで動きます。
+株価、チャート、財務情報、開示書類、オプション、ニュース、そしてあなたのポートフォリオを、キーボードで操作する 1 つのワークスペースにまとめています。企業の詳細なら `DES AAPL`、チャートなら `GP NVDA` と入力します。ターミナル（macOS、Linux、Windows）、デスクトップアプリ（macOS、Windows、Linux）、ブラウザーで動きます。
 
 ## インストール
 
@@ -51,7 +51,7 @@ bun install -g @gloom-sh/terminal
 
 `npm install -g @gloom-sh/terminal` でもインストールできますが、コマンドは Bun で動くので、先に [Bun](https://bun.sh) をインストールしてください。
 
-それから `gloom` を実行します（以前の名前の `gloomberb` も引き続き使えます）。Apple Silicon では、スクリプトがデスクトップアプリの Gloom.app もインストールします。Homebrew、Windows のデスクトップ版インストーラー、手動でのダウンロードについては[インストールガイド](docs/installation.md)にあります。
+それから `gloom` を実行します（以前の名前の `gloomberb` も引き続き使えます）。Apple Silicon では、スクリプトがデスクトップアプリの Gloom.app もインストールします。Homebrew、Windows のデスクトップ版インストーラー、Linux の AppImage、手動でのダウンロードについては[インストールガイド](docs/installation.md)にあります。
 
 チャートは、Ghostty、Kitty、WezTerm など Kitty 互換のターミナルでは画像として、それ以外ではテキストとして描画されます。
 

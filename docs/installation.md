@@ -28,9 +28,20 @@ An install from before 0.18.4 renames itself to `Gloom.app` on its first start a
 curl -fsSL gloom.sh/install | bash
 ```
 
-This installs the standalone binary as `~/.local/bin/gloom`. There is no Linux desktop app yet. On Alpine and other musl distributions the script picks the musl build, which needs `libstdc++` (`apk add libstdc++`).
+This installs the standalone binary as `~/.local/bin/gloom`. On Alpine and other musl distributions the script picks the musl build, which needs `libstdc++` (`apk add libstdc++`).
 
 To install by hand, download the [x64](https://github.com/gloom-sh/gloomberb/releases/latest/download/gloomberb-linux-x64.gz) or [ARM64](https://github.com/gloom-sh/gloomberb/releases/latest/download/gloomberb-linux-arm64.gz) binary (musl: [x64](https://github.com/gloom-sh/gloomberb/releases/latest/download/gloomberb-linux-x64-musl.gz), [ARM64](https://github.com/gloom-sh/gloomberb/releases/latest/download/gloomberb-linux-arm64-musl.gz)), unpack it with `gunzip`, make it executable and put it on your `PATH` as `gloom`.
+
+For the desktop app, [download the AppImage](https://github.com/gloom-sh/gloomberb/releases/latest/download/stable-linux-x64-Gloom.AppImage) (x64), make it executable and run it:
+
+```bash
+chmod +x stable-linux-x64-Gloom.AppImage
+./stable-linux-x64-Gloom.AppImage
+```
+
+It draws with the system's WebKitGTK, which Ubuntu 24.04 and similarly recent distributions have (`sudo apt install libwebkit2gtk-4.1-0 libgtk-3-0` on Ubuntu; package names differ elsewhere). It runs under Wayland and X11; under Wayland, the compositor places the windows the app opens. On NVIDIA, a blank window is fixed by starting it with `WEBKIT_DISABLE_DMABUF_RENDERER=1`.
+
+An AppImage does not update in place: the app's header says when a new version is out, and you [download the AppImage](https://gloom.sh/download/desktop) again over it.
 
 ## Windows
 
@@ -68,13 +79,13 @@ On first start, Gloom clones a few official plugins from GitHub, which needs Git
 
 ## Updates
 
-The desktop app and the standalone binary download updates in the background, then show **Update ready**. Nothing restarts on its own: the desktop app installs the update when you press **Restart** (or `U`), and the terminal binary runs it the next time you start it. Homebrew installs update with `brew upgrade --cask gloom`, and Bun and npm installs by running their install command again.
+The desktop app and the standalone binary download updates in the background, then show **Update ready**. Nothing restarts on its own: the desktop app installs the update when you press **Restart** (or `U`), and the terminal binary runs it the next time you start it. Homebrew installs update with `brew upgrade --cask gloom`, and Bun and npm installs by running their install command again. A Linux AppImage cannot replace itself: it says a new version is available, and you download the AppImage again.
 
 **Release Channel** in the command bar (or `gloom config set updates.channel nightly`) switches the desktop app and the standalone binary to nightly builds of `main`, which get fixes first and can break. Switching back never installs an older version.
 
 ## Uninstall
 
-Run `brew uninstall --cask gloom` or `bun remove -g @gloom-sh/terminal`, or remove the desktop app from **Settings > Apps** on Windows. For a script install, delete `~/.local/bin/gloom`, `~/.local/bin/gloomberb` and `/Applications/Gloom.app`, or `%USERPROFILE%\.local\bin\gloom.exe` on Windows. Your [data](#where-your-data-lives) stays on disk.
+Run `brew uninstall --cask gloom` or `bun remove -g @gloom-sh/terminal`, or remove the desktop app from **Settings > Apps** on Windows. For a script install, delete `~/.local/bin/gloom`, `~/.local/bin/gloomberb` and `/Applications/Gloom.app`, or `%USERPROFILE%\.local\bin\gloom.exe` on Windows. A Linux AppImage install is one file: delete the AppImage. Your [data](#where-your-data-lives) stays on disk.
 
 ## Where your data lives
 
