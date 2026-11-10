@@ -226,3 +226,78 @@ jobs:
         with:
           name: gloomberb-desktop-windows-x64
           path: artifacts/*
+
+  # Linux draws with the system's WebKitGTK, so it needs the libraries and a
+  # display; nothing is signed. The AppImage is the download users run, and the
+  # tar.zst with it is the archive installed AppImages' whole-archive updates
+  # and tarball installs update from.
+  desktop-linux:
+    runs-on: ubuntu-24.04 # webkit2gtk-4.1's apt package; newer runners may not carry it
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+
+      - uses: ./.github/actions/setup-bun
+        with:
+          desktop: "true"
+
+      - name: Set the build version
+        if: ${{ inputs.version != '' }}
+        env:
+          BUILD_VERSION: ${{ inputs.version }}
+        run: npm pkg set "version=$BUILD_VERSION"
+
+      # The same libraries the desktop shell check installs, plus libfuse2 for
+      # the AppImage itself to mount on the runner.
+      - name: System libraries and a display
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-0 libgtk-3-0 libayatana-appindicator3-1 \
+            xvfb openbox zstd libfuse2t64
+          Xvfb :99 -screen 0 1920x1080x24 -nolisten tcp > /dev/null 2>&1 &
+          sleep 1
+          DISPLAY=:99 openbox > /dev/null 2>&1 &
+          echo "DISPLAY=:99" >> "$GITHUB_ENV"
+
+      - name: Build Linux desktop package
+        run: bun run desktop:release
+
+      - name: Verify desktop artifacts
+        run: |
+          set -euo pipefail
+          for file in stable-linux-x64-update.json stable-linux-x64-Gloom.tar.zst; do
+            test -f "artifacts/$file" || { echo "Missing $file" >&2; exit 1; }
+          done
+          ls -l artifacts
+
+      - name: Build the AppImage
+        run: bun scripts/build-linux-appimage.ts artifacts stable
+
+      # timeout exits 124 only if the app was still running when it struck: an
+      # early exit or a crash is any other code.
+      - name: The AppImage opens and stays up
+        run: |
+          set -euo pipefail
+          set +e
+          DISPLAY=:99 GLOOMBERB_NO_TELEMETRY=1 DO_NOT_TRACK=1 ELECTROBUN_CONSOLE=1 \
+            timeout -k 10 45 ./artifacts/stable-linux-x64-Gloom.AppImage > stay-up.log 2>&1
+          code=$?
+          set -e
+          [ "$code" -eq 124 ] || { cat stay-up.log >&2; echo "The AppImage exited with $code" >&2; exit 1; }
+
+      - name: Name the desktop files for the nightly channel
+        if: ${{ inputs.channel == 'nightly' }}
+        run: |
+          set -euo pipefail
+          cd artifacts
+          for file in stable-*; do mv "$file" "nightly-${file#stable-}"; done
+          ls -l
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gloomberb-desktop-linux-x64
+          path: artifacts/*

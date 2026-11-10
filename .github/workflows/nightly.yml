@@ -132,6 +132,7 @@ jobs:
             gloomberb-linux-x64-musl.gz gloomberb-linux-arm64-musl.gz \
             nightly-macos-arm64-update.json nightly-macos-arm64-Gloom.app.tar.zst nightly-macos-arm64-Gloom.dmg \
             nightly-win-x64-update.json nightly-win-x64-Gloom.tar.zst nightly-win-x64-GloomSetup.exe \
+            nightly-linux-x64-update.json nightly-linux-x64-Gloom.tar.zst nightly-linux-x64-Gloom.AppImage \
             nightly-macos-arm64-Gloomberb.app.tar.zst nightly-win-x64-Gloomberb.tar.zst; do
             test -f "dist/$asset" || { echo "Missing $asset" >&2; exit 1; }
           done
@@ -164,7 +165,7 @@ jobs:
         run: |
           set -euo pipefail
           shopt -s nullglob
-          files=(dist/*.dmg dist/*.exe dist/*.gz dist/*.json dist/*.zip dist/*.zst)
+          files=(dist/*.dmg dist/*.exe dist/*.gz dist/*.json dist/*.zip dist/*.zst dist/*.AppImage)
           gh release create "$NIGHTLY_TAG" "${files[@]}" \
             --repo "$GITHUB_REPOSITORY" \
             --target "$NIGHTLY_SHA" \

@@ -3,7 +3,7 @@ import pkg from "./package.json";
 import { DESKTOP_APP_IDENTIFIER, DESKTOP_APP_NAME } from "./src/renderers/electrobun/shared/app-name";
 
 const RELEASE_BASE_URL = "https://github.com/gloom-sh/gloomberb/releases/latest/download";
-/** Patches from the previous release ship for macOS only: no release carries a Linux app, and Windows takes the whole archive. */
+/** Patches from the previous release ship for macOS only: Windows and Linux installs take the whole archive. */
 const GENERATE_RELEASE_PATCH = process.platform === "darwin";
 /**
  * A macOS build for a check rather than for users, which has nothing to sign

@@ -15,9 +15,11 @@ on:
   pull_request:
     paths:
       - ".github/workflows/desktop-shell-check.yml"
+      - ".github/workflows/build-release-assets.yml"
       - "electrobun.config.ts"
       - "patches/electrobun-devkit@*.patch"
       - "scripts/patch-electrobun-devkit.ts"
+      - "scripts/build-linux-appimage.ts"
       - "scripts/desktop-measure/**"
       - "src/renderers/electrobun/bun/window/**"
 
@@ -139,7 +141,16 @@ jobs:
       - name: Build this commit's app (stable)
         run: bun run desktop:release
 
-      # No release carries a Linux desktop app: the earlier one is built from its tag.
+      # The release's Linux job packs this same AppImage; here a PR that breaks
+      # it fails the check rather than the release.
+      - name: Assemble the AppImage
+        run: |
+          set -euo pipefail
+          bun scripts/build-linux-appimage.ts artifacts stable
+          test -s artifacts/stable-linux-x64-Gloom.AppImage
+
+      # The earlier release is from before any release carried a Linux desktop
+      # app: it is built from its tag.
       - name: Build the earlier release
         run: |
           set -euo pipefail
