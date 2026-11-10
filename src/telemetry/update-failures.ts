@@ -35,6 +35,8 @@ export type UpdateInstallKind =
   | "desktop-elsewhere"
   /** Windows and Linux: the app folder the installer created. */
   | "desktop-app-data"
+  /** Linux: an AppImage, mounted read-only; a new one is downloaded to update. */
+  | "desktop-appimage"
   | "terminal-binary"
   | "terminal-managed"
   | "terminal-package-manager"

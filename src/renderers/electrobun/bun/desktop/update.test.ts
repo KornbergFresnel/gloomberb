@@ -11,7 +11,7 @@ import {
 } from "../../../../telemetry/update-failures";
 import type { UpdateProgress } from "../../../../updater";
 import { writeLegacyDesktopFiles } from "../../../../../scripts/write-legacy-desktop-files";
-import { createElectrobunDesktopUpdater, firstTarPath, isWholeTar, removeUpdateAsides, type ElectrobunUpdaterApi } from "./update";
+import { createElectrobunDesktopUpdater, detectDesktopInstallKind, firstTarPath, isWholeTar, removeUpdateAsides, type ElectrobunUpdaterApi } from "./update";
 
 type UpdateInfo = ReturnType<ElectrobunUpdaterApi["updateInfo"]>;
 
@@ -142,6 +142,14 @@ describe("desktop update flow", () => {
       { phase: "downloading", percent: 40 },
       { phase: "ready", canRestart: true },
     ]);
+  });
+
+  test("an AppImage install is offered the new download, never an update into its read-only mount", async () => {
+    const { updater } = createFakeUpdater();
+    const desktop = createElectrobunDesktopUpdater(updater, { runningVersion: "0.17.0", installKind: "desktop-appimage" });
+
+    const result = await desktop.check("0.17.0");
+    expect(result).toMatchObject({ kind: "available", release: { updateAction: { kind: "appimage" } } });
   });
 
   test("applies only on the explicit request, and a second request is harmless", async () => {
@@ -306,6 +314,26 @@ describe("desktop update flow", () => {
     const desktop = createElectrobunDesktopUpdater(updater, { runningVersion: "0.17.0" });
 
     await expect(desktop.check("0.17.0")).resolves.toMatchObject({ kind: "error", failure: { phase: "check", code } });
+  });
+});
+
+describe("where the app runs from", () => {
+  test("the AppImage runtime's environment marks a Linux AppImage install", () => {
+    expect(
+      detectDesktopInstallKind("/tmp/.mount_Gloomx1/app/bin/bun", "linux", "/home/u", {
+        APPIMAGE: "/opt/Gloom.AppImage",
+        APPDIR: "/tmp/.mount_Gloomx1",
+      }),
+    ).toBe("desktop-appimage");
+  });
+
+  test("Linux without it stays the app-data install, and no other platform sees the kind", () => {
+    expect(
+      detectDesktopInstallKind("/home/u/.local/share/com.vincelwt.gloomberb/stable/app/bin/bun", "linux", "/home/u", {}),
+    ).toBe("desktop-app-data");
+    expect(
+      detectDesktopInstallKind("/Applications/Gloom.app/Contents/MacOS/launcher", "darwin", "/home/u", { APPDIR: "/tmp/.mount_Gloomx1" }),
+    ).toBe("desktop-applications");
   });
 });
 

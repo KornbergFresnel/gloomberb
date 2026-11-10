@@ -66,6 +66,8 @@ export interface UpdateProgress {
 export type UpdateAction =
   | { kind: "self" }
   | { kind: "desktop" }
+  /** A Linux AppImage, mounted read-only by its runtime: updated by downloading a new one. */
+  | { kind: "appimage" }
   | { kind: "manual"; command: string }
   /**
    * A standalone binary this process cannot overwrite: a Nix store path, a
@@ -513,7 +515,9 @@ export async function performUpdate(
         ? `Run ${action.command}`
         : action.kind === "managed"
           ? `Update through the package manager that installed Gloom: ${action.reason}.`
-          : "This update type is unavailable in the current runtime.",
+          : action.kind === "appimage"
+            ? "This AppImage is updated by downloading a new one from gloom.sh/download/desktop."
+            : "This update type is unavailable in the current runtime.",
     });
     return;
   }

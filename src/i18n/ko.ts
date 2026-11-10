@@ -1069,6 +1069,7 @@ export const ko: Record<string, string> = {
   "could not restart": "다시 시작할 수 없음",
   "v{version} available — run {command}": "v{version} 사용 가능 — {command} 실행",
   "v{version} available, update through the package manager that installed Gloom": "v{version} 사용 가능, Gloom을 설치한 패키지 관리자로 업데이트하세요",
+  "v{version} available — download the new AppImage": "v{version} 사용 가능 — 새 AppImage를 다운로드하세요",
   "v{version} available — starting download...": "v{version} 사용 가능 — 다운로드 시작 중...",
   "command bar": "명령 팔레트",
   "Tidy Windows": "창 정리",

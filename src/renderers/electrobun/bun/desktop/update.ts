@@ -274,14 +274,19 @@ async function removeUnusableUpdateArchives(folder: string): Promise<string[]> {
  * Where the running app sits, for update failure reports and for what an
  * install that cannot replace it means. Electrobun replaces the macOS bundle
  * the app runs from; on Windows and Linux it always installs into its own
- * folder under the user's app data.
+ * folder under the user's app data, except a Linux AppImage, which the AppImage
+ * runtime mounts read-only and the AppRun environment marks.
  */
 export function detectDesktopInstallKind(
   execPath: string = process.execPath,
   platform: string = process.platform,
   homeDir: string = process.env.HOME ?? "",
+  env: NodeJS.ProcessEnv = process.env,
 ): UpdateInstallKind {
-  if (platform !== "darwin") return platform === "win32" || platform === "linux" ? "desktop-app-data" : "unknown";
+  if (platform !== "darwin") {
+    if (platform === "linux" && (env.APPIMAGE || env.APPDIR)) return "desktop-appimage";
+    return platform === "win32" || platform === "linux" ? "desktop-app-data" : "unknown";
+  }
   const bundle = /^(.*?\.app)\/Contents\//.exec(execPath)?.[1];
   if (!bundle) return "unknown";
   if (bundle.includes("/AppTranslocation/")) return "desktop-translocated";
@@ -435,6 +440,8 @@ export function createElectrobunDesktopUpdater(
   } = {},
 ): ElectrobunDesktopUpdater {
   let downloadInProgress = false;
+  /** An AppImage runs from a read-only mount: a check can only point at the download. */
+  const updateAction: ReleaseInfo["updateAction"] = installKind === "desktop-appimage" ? { kind: "appimage" } : { kind: "desktop" };
   /**
    * The release whose download finished and waits for the user's Restart. Kept
    * here rather than read back from Electrobun: its updater replaces the object
@@ -483,7 +490,7 @@ export function createElectrobunDesktopUpdater(
       tagName: `v${version}`,
       downloadUrl: `${baseUrl.replace(/\/+$/, "")}/${desktopReleasePlatformPrefix(channel)}-update.json`,
       publishedAt: "",
-      updateAction: { kind: "desktop" },
+      updateAction,
     };
   }
 
@@ -521,7 +528,7 @@ export function createElectrobunDesktopUpdater(
         tagName: target.tag_name,
         downloadUrl: `${baseUrl}/${desktopReleasePlatformPrefix(filesChannel)}-update.json`,
         publishedAt: target.published_at ?? "",
-        updateAction: { kind: "desktop" },
+        updateAction,
         channel: "nightly",
       },
     };

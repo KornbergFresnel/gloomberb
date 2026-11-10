@@ -1071,6 +1071,7 @@ export const ja: Record<string, string> = {
   "could not restart": "再起動できません",
   "v{version} available — run {command}": "v{version} が利用可能 — {command} を実行",
   "v{version} available, update through the package manager that installed Gloom": "v{version} が利用可能です。Gloom をインストールしたパッケージマネージャーで更新してください",
+  "v{version} available — download the new AppImage": "v{version} が利用可能 — 新しい AppImage をダウンロード",
   "v{version} available — starting download...": "v{version} が利用可能 — ダウンロードを開始しています...",
   "command bar": "コマンド バー",
   "Tidy Windows": "ウィンドウを整理",

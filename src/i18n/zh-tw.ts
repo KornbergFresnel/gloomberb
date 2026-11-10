@@ -1071,6 +1071,7 @@ export const zhTW: Record<string, string> = {
   "could not restart": "無法重新啟動",
   "v{version} available — run {command}": "v{version} 可用 — 執行 {command}",
   "v{version} available, update through the package manager that installed Gloom": "v{version} 可用，請透過安裝 Gloom 的套件管理器更新",
+  "v{version} available — download the new AppImage": "v{version} 可用 — 下載新的 AppImage",
   "v{version} available — starting download...": "v{version} 可用 — 開始下載...",
   "command bar": "命令列",
   "Tidy Windows": "整理視窗",

@@ -453,6 +453,12 @@ function resolveUpdateStatusView({
         }),
       };
     }
+    if (updateAvailable.updateAction.kind === "appimage") {
+      return {
+        kind: "text",
+        text: tf("v{version} available — download the new AppImage", { version: updateAvailable.version }),
+      };
+    }
     return { kind: "text", text: tf("v{version} available — starting download...", { version: updateAvailable.version }) };
   }
   if (updateNotice) return { kind: "text", text: updateNotice, clip: true };

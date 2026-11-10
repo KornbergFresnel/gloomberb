@@ -1071,6 +1071,7 @@ export const zhCN: Record<string, string> = {
   "could not restart": "无法重新启动",
   "v{version} available — run {command}": "v{version} 可用 — 执行 {command}",
   "v{version} available, update through the package manager that installed Gloom": "v{version} 可用，请通过安装 Gloom 的包管理器更新",
+  "v{version} available — download the new AppImage": "v{version} 可用 — 下载新的 AppImage",
   "v{version} available — starting download...": "v{version} 可用 — 开始下载...",
   "command bar": "命令栏",
   "Tidy Windows": "整理窗口",
