@@ -216,16 +216,18 @@ index 4c47ed9d2..fde979421 100644
  	} catch (error) {
  		rmSync(options.outputPath, { force: true });
  		throw error;
-@@ -1773,8 +1854,8 @@ async function checkForUpdateOperation(): Promise<UpdateInfo> {
+@@ -1809,8 +1890,8 @@ async function checkForUpdateOperation(): Promise<UpdateInfo> {
  		return updateInfo;
  	}
  
 -	const platformPrefix = getPlatformPrefix(info.channel, currentOS, currentArch);
--	const updateInfoUrl = `${info.baseUrl.replace(/\/+$/, "")}/${platformPrefix}-update.json?${randomBytes(8).toString("hex")}`;
 +	const platformPrefix = updateSourcePrefix(info.channel, currentOS, currentArch);
-+	const updateInfoUrl = `${updateSourceBaseUrl(info).replace(/\/+$/, "")}/${platformPrefix}-update.json?${randomBytes(8).toString("hex")}`;
+ 	const cacheBuster = randomBytes(8).toString("hex");
+-	const manifestBase = `${info.baseUrl.replace(/\/+$/, "")}/${platformPrefix}`;
++	const manifestBase = `${updateSourceBaseUrl(info).replace(/\/+$/, "")}/${platformPrefix}`;
+ 	let updateInfoUrl = `${manifestBase}-update-v2.json?${cacheBuster}`;
  	try {
- 		const response = await fetch(updateInfoUrl, {
+ 		let response = await fetch(updateInfoUrl, {
  			signal: AbortSignal.timeout(30_000),
 @@ -1938,7 +2019,7 @@ export async function preparePatchChainForUpdate(
  	const bspatchPath =
@@ -245,50 +247,14 @@ index 4c47ed9d2..fde979421 100644
  			const pathPrefix = join(
  				extractionFolder,
  				`.${transactionId}.${patchNumber}.${currentHash}`,
-@@ -2136,8 +2217,8 @@ async function downloadUpdateOperation(): Promise<void> {
- 		join(extractionFolder, `${manifest.hash}.tar`),
- 	);
- 	const artifactUrl = buildUpdateArtifactUrl(
--		info.baseUrl,
--		manifest.artifact.file,
-+		updateSourceBaseUrl(info),
-+		updateSourceArtifactFile(manifest),
- 	);
- 	const artifactRequestUrl = addUpdateArtifactCacheBuster(
- 		artifactUrl,
-@@ -2175,23 +2256,19 @@ async function downloadUpdateOperation(): Promise<void> {
- 			emitStatus("decompressing", "Decompressing update bundle...", {
- 				zstdPath,
- 			});
--			execFileSync(
--				zstdPath,
--				[
--					"decompress",
--					"-i",
--					compressedPath,
--					"-o",
--					tarPartialPath,
--					"--no-timing",
--				],
--				{ stdio: "ignore", windowsHide: true },
--			);
-+			await runUpdateTool(zstdPath, [
-+				"decompress",
-+				"-i",
-+				compressedPath,
-+				"-o",
-+				tarPartialPath,
-+				"--no-timing",
-+			]);
- 			requireRegularFile(tarPartialPath, "Decompressed update archive");
- 			if (lstatSync(tarPartialPath).size <= 0) {
- 				throw new Error("Decompressed update archive is empty");
- 			}
--			syncFile(tarPartialPath);
-+			await syncFileOffThread(tarPartialPath);
- 			publishFileReplacingRegular(tarPartialPath, retainedTarPath);
- 		}
- 
+@@ -2249,7 +2330,7 @@ export async function prepareNativeUpdate(options: {
+ 		hash: manifest.hash,
+ 		base_hash: info.hash,
+-		base_url: info.baseUrl,
+-		artifact_file: manifest.artifact.file,
++		base_url: updateSourceBaseUrl(info),
++		artifact_file: updateSourceArtifactFile(manifest),
+ 		channel_root: channelRoot,
 @@ -2388,6 +2465,14 @@ const Updater = {
  		onStatusChangeCallback = callback;
  		if (callback) scheduleNativeUpdateResultReconciliation();

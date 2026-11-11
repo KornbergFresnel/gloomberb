@@ -125,7 +125,7 @@
     "@types/bun": "^1.3.14",
     "@types/react-dom": "^19.2.3",
     "@types/three": "0.165.0",
-    "electrobun": "2.0.5",
+    "electrobun": "2.0.6",
     "gloom-polls": "github:gloom-sh/gloom-polls",
     "gloom-prediction-markets": "github:gloom-sh/gloom-prediction-markets",
     "happy-dom": "^20.11.1",
